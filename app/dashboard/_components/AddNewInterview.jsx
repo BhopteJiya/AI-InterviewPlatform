@@ -135,6 +135,10 @@ import { v4 as uuidv4 } from "uuid";
 import { useUser } from "@clerk/nextjs";
 import { LoaderCircle } from "lucide-react";
 import { db } from "../../../utils/db";
+import { useRouter } from "next/navigation";
+import { MockInterview } from "../../../utils/schema";
+import moment from "moment";
+
 
 const AddNewInterview = () => {
   const [openDialog, setOpenDialog] = useState(false);
@@ -143,41 +147,50 @@ const AddNewInterview = () => {
   const [experience, setExperience] = useState(""); 
   const [loading, setloading] = useState(false);
   const[josnResponse, setJsonResponse] = useState(null);
-  const user=useUser();
+  const { user } = useUser();
+  const router = useRouter();
+
+
+  
 
 const onSubmit = async (e) => {
   setloading(true);
   e.preventDefault();
-  console.log(jobTitle, jobDescription, experience);
 
   const InputPrompt = `Job position: ${jobTitle}, Job Description: ${jobDescription}, Years of Experience: ${experience}. Depending on this, give me 5 interview questions with answers in JSON format. Give question and answer as fields in JSON.`;
 
-  const rawText = await getChatResponse(InputPrompt);  // ← yeh change hua
+  const rawText = await getChatResponse(InputPrompt);
 
   const MockJsonResp = rawText
     .replace('```json', '')
-    .replace('```', '');
+    .replace('```', '')
+    .trim(); 
 
-  console.log(JSON.parse(MockJsonResp));
+  console.log("Parsed:", JSON.parse(MockJsonResp));
+   setJsonResponse(MockJsonResp);
+    
+  if (MockJsonResp) {
+    const resp = await db.insert(MockInterview)
+      .values({
+        mockId: uuidv4(),
+        jsonMockResp: MockJsonResp,
+        jobPosition: jobTitle,
+        jobDesc: jobDescription,
+        jobExperience: experience,
+        createdBy: user?.primaryEmailAddress?.emailAddress, // ✅ { user } destructure ke baad
+        createdAt: moment().format('DD-MM-YYYY')
+      }).returning({ mockId: MockInterview.mockId });
 
-if(MockJsonResp){
-const resp = await db.insert(MockInterview)
-  .values({
-    mockId: uuidv4(),
-    jsonMockResp: MockJsonResp,
-    jobPosition: jobPosition,
-    jobDesc: jobDesc,
-    jobExperience: jobExperience,
-    createdBy: user?.primaryEmailAddress?.emailAddress,
-    createdAt: moment().format('DD-MM-YYYY')
-  })
-  .returning({ mockId: MockInterview.mockId });
+    console.log("Inserted ID:", resp);
 
-console.log("Inserted ID:", resp);
-}
-else{
-  console.error("Failed to get a valid JSON response from the AI.");
-}
+    if (resp) {
+      setOpenDialog(false);
+      router.push('/dashboard/interview/' + resp[0]?.mockId); // ✅ Redirect
+    }
+  } else {
+    console.error("Failed to get a valid JSON response from the AI.");
+  }
+
   setloading(false);
 };
 
