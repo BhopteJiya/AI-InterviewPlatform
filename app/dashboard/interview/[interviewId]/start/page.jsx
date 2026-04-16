@@ -75,7 +75,9 @@ const StartInterview = (props) => {
                 {/* Video/ Audio Recording */}
 
                 <div>
-                    <RecordAnswer></RecordAnswer>
+                    <RecordAnswer   activeQuestionIndex={activeQuestionIndex}
+                        mockInterviewQuestion={mockInterviewQuestion} 
+                        interviewData={interviewData}></RecordAnswer>
                 </div>
             </div>
         </div>
