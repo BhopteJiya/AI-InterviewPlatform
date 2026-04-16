@@ -1,7 +1,6 @@
 import React from 'react'
 import AddNewInterview from './_components/AddNewInterview';
-
-import { UserButton } from "@clerk/nextjs";
+import InterviewList from './_components/InterviewList';
 
 function Dashboard() {
 return (
@@ -10,6 +9,9 @@ return (
 <h2 className='text-gray-500'>Create and Start your AI Mockup</h2>
 <div className='grid grid-cols-1 md:grid-cols-3 my-5'>
 <AddNewInterview/>
+</div>
+<div>
+    <InterviewList></InterviewList>
 </div>
 </div>
 )

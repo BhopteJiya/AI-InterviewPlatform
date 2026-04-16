@@ -9,6 +9,8 @@ import { db } from '../../../../../utils/db';
 import { use } from "react";
 import QuestionSection from './_component/QuestionSection';
 import RecordAnswer from './_component/RecordAnswer';
+import Link from 'next/link'
+
 
 const StartInterview = (props) => {
     const params = use(props.params);
@@ -38,50 +40,73 @@ const StartInterview = (props) => {
     }
 
     return (
-        <div>
-            <div className='grid grid-cols-1 md:grid-cols-2'>
+  <div>
+    <div className='grid grid-cols-1 md:grid-cols-2'>
 
-                {/* Questions */}
-                <div>
+      {/* Questions */}
+      <div>
+        <QuestionSection
+          activeQuestionIndex={activeQuestionIndex}
+          mockInterviewQuestion={mockInterviewQuestion}
+          setActiveQuestionIndex={setActiveQuestionIndex}
+        />
+      </div>
 
-                    <QuestionSection
-                        activeQuestionIndex={activeQuestionIndex}
-                        mockInterviewQuestion={mockInterviewQuestion}
-                        setActiveQuestionIndex={setActiveQuestionIndex}
-                    />
-                    <button
-                        onClick={() =>
-                            setActiveQuestionIndex((prev) =>
-                                prev > 0 ? prev - 1 : prev
-                            )
-                        }
-                        className="border px-4 py-2 mt-5 mr-3"
-                    >
-                        Previous Question
-                    </button>
+      {/* Video/ Audio Recording */}
+      <div>
+        <RecordAnswer
+          activeQuestionIndex={activeQuestionIndex}
+          mockInterviewQuestion={mockInterviewQuestion}
+          interviewData={interviewData}
+        />
+      </div>
+    </div>
 
-                    <button
-                        onClick={() =>
-                            setActiveQuestionIndex((prev) =>
-                                prev < mockInterviewQuestion.length - 1 ? prev + 1 : prev
-                            )
-                        }
-                        className="border px-4 py-2 mt-5"
-                    >
-                        Next Question
-                    </button>
-                </div>
+    {/* 🔥 Buttons Section (Below both) */}
+    <div className="flex justify-between items-center mt-6">
 
-                {/* Video/ Audio Recording */}
+      {/* Left side: Previous + Next */}
+      <div>
+        {activeQuestionIndex > 0 && (
+          <button
+            onClick={() =>
+              setActiveQuestionIndex((prev) =>
+                prev > 0 ? prev - 1 : prev
+              )
+            }
+            className="bg-gray-300 rounded-xl  border px-4 py-2 mr-3"
+          >
+            Previous Question
+          </button>
+        )}
 
-                <div>
-                    <RecordAnswer   activeQuestionIndex={activeQuestionIndex}
-                        mockInterviewQuestion={mockInterviewQuestion} 
-                        interviewData={interviewData}></RecordAnswer>
-                </div>
-            </div>
-        </div>
-    )
+        {activeQuestionIndex < (mockInterviewQuestion?.length || 0) - 1 && (
+          <button
+            onClick={() =>
+              setActiveQuestionIndex((prev) =>
+                prev < mockInterviewQuestion.length - 1 ? prev + 1 : prev
+              )
+            }
+            className="bg-gray-300 rounded-xl border px-4 py-2"
+          >
+            Next Question
+          </button>
+        )}
+      </div>
+
+      {/* Right side: Submit */}
+     <Link
+  href={`/dashboard/interview/${interviewData?.mockId}/feedback`}
+  className="bg-green-700 text-white rounded-xl border px-6 py-2 inline-block"
+>
+  Submit and End
+</Link>
+      
+      
+
+    </div>
+  </div>
+)
 }
 
 export default StartInterview
