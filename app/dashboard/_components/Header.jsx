@@ -2,7 +2,7 @@
 
 import { UserButton } from '@clerk/nextjs'
 import {usePathname} from 'next/navigation'
-import React from 'react'
+import Link from 'next/link'
 
 const Header = () => {
     const path=usePathname();
@@ -19,16 +19,49 @@ const Header = () => {
 
       {/* NAV LINKS */}
       <nav className="hidden md:flex">
-        <ul className="flex items-center gap-6 text-gray-600 font-medium">
-          <li className={`hover:text-blue-600 cursor-pointer
-             ${path === "/dashboard" ? "text-blue-600 font-bold" : ""}`}>Dashboard</li>
-          <li className={`hover:text-blue-600 cursor-pointer
-             ${path === "/upgrade" ? "text-blue-600 font-bold" : ""}`} >Upgrade</li>
-          <li className={`hover:text-blue-600 cursor-pointer
-             ${path === "/questions" ? "text-blue-600 font-bold" : ""}`}>Questions</li>
-          <li className={`hover:text-blue-600 cursor-pointer
-             ${path === "/how-it-works" ? "text-blue-600 font-bold" : ""}`}>How it Works?</li>
-        </ul>
+      <ul className="flex items-center gap-6 text-gray-600 font-medium">
+
+  <li>
+    <Link 
+      href="/dashboard"
+      className={`hover:text-blue-600 cursor-pointer 
+      ${path === "/dashboard" ? "text-blue-600 font-bold" : ""}`}
+    >
+      Dashboard
+    </Link>
+  </li>
+<li>
+  <Link 
+    href="/dashboard/upgrade"
+    className={`hover:text-blue-600 cursor-pointer 
+    ${path === "/dashboard/upgrade" ? "text-blue-600 font-bold" : ""}`}
+  >
+    Upgrade
+  </Link>
+</li>
+
+  <li>
+    <Link 
+      href="/dashboard/questions"
+      className={`hover:text-blue-600 cursor-pointer 
+      ${path === "/dashboard/questions" ? "text-blue-600 font-bold" : ""}`}
+    >
+        How it Works?
+    </Link>
+  </li>
+
+
+  <li>
+    <Link 
+      href="/how-it-works"
+      className={`hover:text-blue-600 cursor-pointer 
+      ${path === "/how-it-works" ? "text-blue-600 font-bold" : ""}`}
+    >
+      Questions
+    </Link>
+  </li>
+
+</ul>
       </nav>
 
       {/* USER */}
